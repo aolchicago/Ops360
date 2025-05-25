@@ -1,0 +1,89 @@
+@page "/userstory"
+
+@using System.Net.Http.Json
+
+<h3>Create User Story</h3>
+
+<EditForm Model="userStoryCreateDto" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label">Project Context</label>
+        <InputText class="form-control" @bind-Value="userStoryCreateDto.ProjectContext" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">User Story Description</label>
+        <InputText class="form-control" @bind-Value="userStoryCreateDto.UserStoryDescription" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Persona Name</label>
+        <InputText class="form-control" @bind-Value="userStoryCreateDto.PersonaName" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">User Story Style</label>
+        <InputSelect class="form-control" @bind-Value="userStoryCreateDto.UserStoryStyle">
+            <option value="classic">Classic</option>
+            <option value="hypothesis">Hypothesis Driven</option>
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@if (userStory != null)
+{
+    <div class="mt-4">
+        <h4>Created User Story</h4>
+        <p><strong>Title:</strong> @userStory.Title</p>
+        <p><strong>Description:</strong> @userStory.Description</p>
+        <p><strong>Acceptance Criteria:</strong> @userStory.AcceptanceCriteria</p>
+    </div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    private UserStoryCreateDtoModel userStoryCreateDto = new();
+    private UserStoryModel? userStory;
+    private string? errorMessage;
+
+    [Inject]
+    private HttpClient Http { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        errorMessage = null;
+        userStory = null;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/UserStory", userStoryCreateDto);
+            if (response.IsSuccessStatusCode)
+            {
+                userStory = await response.Content.ReadFromJsonAsync<UserStoryModel>();
+            }
+            else
+            {
+                errorMessage = $"Error: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    public class UserStoryCreateDtoModel
+    {
+        public string? ProjectContext { get; set; }
+        public string? UserStoryDescription { get; set; }
+        public string? PersonaName { get; set; }
+        public string UserStoryStyle { get; set; } = "classic";
+    }
+    public class UserStoryModel
+    {
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+    }
+}

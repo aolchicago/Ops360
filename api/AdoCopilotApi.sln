@@ -9,6 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvalPrompts", "EvalPrompts\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapache.PromptEvalDotNet", "Mapache.PromptEvalDotNet\Mapache.PromptEvalDotNet.csproj", "{18763084-1EAA-454C-8548-9EFE18405351}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops360Web.AppHost", "..\Ops360Web\Ops360Web.AppHost\Ops360Web.AppHost.csproj", "{142A9F51-C440-4FC9-8772-F977A891D165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops360Web.ServiceDefaults", "..\Ops360Web\Ops360Web.ServiceDefaults\Ops360Web.ServiceDefaults.csproj", "{9A949636-36F5-B94D-E2AF-FAA21809D05C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops360Web.ApiService", "..\Ops360Web\Ops360Web.ApiService\Ops360Web.ApiService.csproj", "{06511726-C322-986C-2A71-AB85A0D30FBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops360Web.Web", "..\Ops360Web\Ops360Web.Web\Ops360Web.Web.csproj", "{779C40DA-2DEE-F1A1-C9D7-6872FE2FDBAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ops360Web.Tests", "..\Ops360Web\Ops360Web.Tests\Ops360Web.Tests.csproj", "{6E19B230-41BA-AC90-76B9-5C562AA13FBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +37,26 @@ Global
 		{18763084-1EAA-454C-8548-9EFE18405351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18763084-1EAA-454C-8548-9EFE18405351}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18763084-1EAA-454C-8548-9EFE18405351}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142A9F51-C440-4FC9-8772-F977A891D165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{142A9F51-C440-4FC9-8772-F977A891D165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142A9F51-C440-4FC9-8772-F977A891D165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{142A9F51-C440-4FC9-8772-F977A891D165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A949636-36F5-B94D-E2AF-FAA21809D05C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A949636-36F5-B94D-E2AF-FAA21809D05C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A949636-36F5-B94D-E2AF-FAA21809D05C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A949636-36F5-B94D-E2AF-FAA21809D05C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06511726-C322-986C-2A71-AB85A0D30FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06511726-C322-986C-2A71-AB85A0D30FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06511726-C322-986C-2A71-AB85A0D30FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06511726-C322-986C-2A71-AB85A0D30FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{779C40DA-2DEE-F1A1-C9D7-6872FE2FDBAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{779C40DA-2DEE-F1A1-C9D7-6872FE2FDBAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{779C40DA-2DEE-F1A1-C9D7-6872FE2FDBAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{779C40DA-2DEE-F1A1-C9D7-6872FE2FDBAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E19B230-41BA-AC90-76B9-5C562AA13FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E19B230-41BA-AC90-76B9-5C562AA13FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E19B230-41BA-AC90-76B9-5C562AA13FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E19B230-41BA-AC90-76B9-5C562AA13FBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
