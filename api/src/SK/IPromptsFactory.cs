@@ -9,5 +9,8 @@ namespace AzDoCopilotSK.SK
     {
         KernelFunction GetTestCasePrompt();
         KernelFunction GetUserStoryPrompt(string userStoryStyle);
+        KernelFunction GetEpicPrompt();
+        KernelFunction GetFeaturePrompt();
+        KernelFunction GetTaskPrompt();
     }
 }

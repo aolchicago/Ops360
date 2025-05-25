@@ -1,0 +1,15 @@
+A SAFe Task is a small, actionable piece of work derived from a user story. Tasks are the smallest unit of work and are used to track progress on user stories.
+
+Write a Task based on the following context:
+
+[UserStoryContext]
+{{$UserStoryContext}}
+[End UserStoryContext]
+
+[TaskGoal]
+{{$TaskGoal}}
+[End TaskGoal]
+
+Return the results in json format with the fields title, description, and acceptanceCriteria. All these fields in the json object are of type string. Do not return anything besides the json, no comments, no format, no markdown, just the json object. For example:
+
+{ "title": "My summarized title", "description": "As a developer, I want to ...", "acceptanceCriteria": "1. ..." }

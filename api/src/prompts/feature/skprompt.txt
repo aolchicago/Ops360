@@ -1,0 +1,19 @@
+A SAFe Feature is a service that fulfills a stakeholder need and can be delivered by a single Agile Release Train (ART) in a Program Increment (PI). Features are split from Epics and further decomposed into user stories.
+
+Write a Feature based on the following context:
+
+[EpicContext]
+{{$EpicContext}}
+[End EpicContext]
+
+[Stakeholder]
+{{$Stakeholder}}
+[End Stakeholder]
+
+[FeatureGoal]
+{{$FeatureGoal}}
+[End FeatureGoal]
+
+Return the results in json format with the fields title, description, and acceptanceCriteria. All these fields in the json object are of type string. Do not return anything besides the json, no comments, no format, no markdown, just the json object. For example:
+
+{ "title": "My summarized title", "description": "As a <stakeholder>, I want to ...", "acceptanceCriteria": "1. ..." }

@@ -1,0 +1,23 @@
+A SAFe Epic is a large body of work that can be broken down into a number of smaller tasks (Features, User Stories, and Tasks). Epics are typically cross-cutting and require analysis before implementation.
+
+Write an Epic based on the following context:
+
+[PortfolioContext]
+{{$PortfolioContext}}
+[End PortfolioContext]
+
+[BusinessOutcome]
+{{$BusinessOutcome}}
+[End BusinessOutcome]
+
+[Stakeholder]
+{{$Stakeholder}}
+[End Stakeholder]
+
+[ProblemStatement]
+{{$ProblemStatement}}
+[End ProblemStatement]
+
+Return the results in json format with the fields title, description, and acceptanceCriteria. All these fields in the json object are of type string. Do not return anything besides the json, no comments, no format, no markdown, just the json object. For example:
+
+{ "title": "My summarized title", "description": "As a <stakeholder>, I want to ...", "acceptanceCriteria": "1. ..." }
