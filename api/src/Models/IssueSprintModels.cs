@@ -22,11 +22,19 @@ namespace AzDoCopilotSK.Models
         public DateTime EndDate { get; set; }
         public int Velocity { get; set; }
         public List<Issue> Issues { get; set; } = new();
+        public List<Epic>? Epics { get; set; }
+        public List<Feature>? Features { get; set; }
+        public List<UserStory>? UserStories { get; set; }
+        public List<TaskItem>? Tasks { get; set; }
     }
 
     public class SprintCalculationRequestDto
     {
         public List<Issue> Issues { get; set; } = new();
+        public List<Epic>? Epics { get; set; }
+        public List<Feature>? Features { get; set; }
+        public List<UserStory>? UserStories { get; set; }
+        public List<TaskItem>? Tasks { get; set; }
         public int Velocity { get; set; }
         public DateTime StartDate { get; set; }
         public int SprintLengthDays { get; set; } = 14;
@@ -36,5 +44,9 @@ namespace AzDoCopilotSK.Models
     {
         public List<Sprint> Sprints { get; set; } = new();
         public List<Issue> UnassignedIssues { get; set; } = new();
+        public List<Epic>? UnassignedEpics { get; set; }
+        public List<Feature>? UnassignedFeatures { get; set; }
+        public List<UserStory>? UnassignedUserStories { get; set; }
+        public List<TaskItem>? UnassignedTasks { get; set; }
     }
 }

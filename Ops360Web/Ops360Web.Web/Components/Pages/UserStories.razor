@@ -1,0 +1,87 @@
+@page "/userstories"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>User Stories</h3>
+
+<EditForm Model="newUserStory" OnValidSubmit="CreateUserStory">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="newUserStory.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="newUserStory.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Acceptance Criteria</label>
+        <InputTextArea class="form-control" @bind-Value="newUserStory.AcceptanceCriteria" />
+    </div>
+    <button class="btn btn-primary" type="submit">Add User Story</button>
+</EditForm>
+
+@if (userStories != null)
+{
+    <h4 class="mt-4">User Stories</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Acceptance Criteria</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var us in userStories)
+            {
+                <tr>
+                    <td>@us.Title</td>
+                    <td>@us.Description</td>
+                    <td>@us.AcceptanceCriteria</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteUserStory(us.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<UserStory>? userStories;
+    private UserStory newUserStory = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserStories();
+    }
+
+    private async Task LoadUserStories()
+    {
+        userStories = await Http.GetFromJsonAsync<List<UserStory>>("/api/UserStory");
+    }
+
+    private async Task CreateUserStory()
+    {
+        await Http.PostAsJsonAsync("/api/UserStory", newUserStory);
+        newUserStory = new();
+        await LoadUserStories();
+    }
+
+    private async Task DeleteUserStory(Guid id)
+    {
+        await Http.DeleteAsync($"/api/UserStory/{id}");
+        await LoadUserStories();
+    }
+
+    public class UserStory
+    {
+        public Guid Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+    }
+}

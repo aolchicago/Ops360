@@ -1,0 +1,87 @@
+@page "/tasks"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Tasks</h3>
+
+<EditForm Model="newTask" OnValidSubmit="CreateTask">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="newTask.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="newTask.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Acceptance Criteria</label>
+        <InputTextArea class="form-control" @bind-Value="newTask.AcceptanceCriteria" />
+    </div>
+    <button class="btn btn-primary" type="submit">Add Task</button>
+</EditForm>
+
+@if (tasks != null)
+{
+    <h4 class="mt-4">Tasks</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Acceptance Criteria</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in tasks)
+            {
+                <tr>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>@task.AcceptanceCriteria</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteTask(task.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TaskItem>? tasks;
+    private TaskItem newTask = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasks();
+    }
+
+    private async Task LoadTasks()
+    {
+        tasks = await Http.GetFromJsonAsync<List<TaskItem>>("/api/Task");
+    }
+
+    private async Task CreateTask()
+    {
+        await Http.PostAsJsonAsync("/api/Task", newTask);
+        newTask = new();
+        await LoadTasks();
+    }
+
+    private async Task DeleteTask(Guid id)
+    {
+        await Http.DeleteAsync($"/api/Task/{id}");
+        await LoadTasks();
+    }
+
+    public class TaskItem
+    {
+        public Guid Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+    }
+}
