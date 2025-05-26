@@ -33,5 +33,20 @@ namespace AzDoCopilotSK.SK
         {
             return prompts!["testcase"];
         }
+
+        public KernelFunction GetEpicPrompt()
+        {
+            return prompts!["epic"]!;
+        }
+
+        public KernelFunction GetFeaturePrompt()
+        {
+            return prompts!["feature"]!;
+        }
+
+        public KernelFunction GetTaskPrompt()
+        {
+            return prompts!["task"]!;
+        }
     }
 }

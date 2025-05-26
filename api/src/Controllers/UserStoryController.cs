@@ -12,17 +12,21 @@ namespace AzDoCopilotSK.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserStoryController : ControllerBase
+    public class UserStoryController(Kernel kernel, IPromptsFactory skillsFactory, ILogger<UserStoryController> logger) : ControllerBase
     {
-        private readonly Kernel _kernel;
-        private readonly IPromptsFactory _promptsFactory;
-        private readonly ILogger<UserStoryController> _logger;
+        private static readonly List<UserStory> _userStories = [];
+        private readonly Kernel _kernel = kernel;
+        private readonly IPromptsFactory _promptsFactory = skillsFactory;
+        private readonly ILogger<UserStoryController> _logger = logger;
 
-        public UserStoryController(Kernel kernel, IPromptsFactory skillsFactory, ILogger<UserStoryController> logger)
+        [HttpGet]
+        public ActionResult<IEnumerable<UserStory>> GetAll() => Ok(_userStories);
+
+        [HttpGet("{id}")]
+        public ActionResult<UserStory> GetById(Guid id)
         {
-            _kernel = kernel;
-            _promptsFactory = skillsFactory;
-            _logger = logger;
+            var userStory = _userStories.FirstOrDefault(u => u.Id == id);
+            return userStory == null ? NotFound() : Ok(userStory);
         }
 
         [HttpPost]
@@ -38,8 +42,28 @@ namespace AzDoCopilotSK.Controllers
                 userStoryCreateDto.ProjectContext,
                 userStoryCreateDto.PersonaName
             );
-            
+            if (userStory != null) _userStories.Add(userStory);
             return Ok(userStory);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult Update(Guid id, [FromBody] UserStory update)
+        {
+            var userStory = _userStories.FirstOrDefault(u => u.Id == id);
+            if (userStory == null) return NotFound();
+            userStory.Title = update.Title;
+            userStory.Description = update.Description;
+            userStory.AcceptanceCriteria = update.AcceptanceCriteria;
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult Delete(Guid id)
+        {
+            var userStory = _userStories.FirstOrDefault(u => u.Id == id);
+            if (userStory == null) return NotFound();
+            _userStories.Remove(userStory);
+            return NoContent();
         }
     }
 }

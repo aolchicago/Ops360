@@ -1,0 +1,87 @@
+@page "/epics"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Epics</h3>
+
+<EditForm Model="newEpic" OnValidSubmit="CreateEpic">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="newEpic.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="newEpic.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Acceptance Criteria</label>
+        <InputTextArea class="form-control" @bind-Value="newEpic.AcceptanceCriteria" />
+    </div>
+    <button class="btn btn-primary" type="submit">Add Epic</button>
+</EditForm>
+
+@if (epics != null)
+{
+    <h4 class="mt-4">Epics</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Acceptance Criteria</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var epic in epics)
+            {
+                <tr>
+                    <td>@epic.Title</td>
+                    <td>@epic.Description</td>
+                    <td>@epic.AcceptanceCriteria</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteEpic(epic.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Epic>? epics;
+    private Epic newEpic = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEpics();
+    }
+
+    private async Task LoadEpics()
+    {
+        epics = await Http.GetFromJsonAsync<List<Epic>>("/api/Epic");
+    }
+
+    private async Task CreateEpic()
+    {
+        await Http.PostAsJsonAsync("/api/Epic", newEpic);
+        newEpic = new();
+        await LoadEpics();
+    }
+
+    private async Task DeleteEpic(Guid id)
+    {
+        await Http.DeleteAsync($"/api/Epic/{id}");
+        await LoadEpics();
+    }
+
+    public class Epic
+    {
+        public Guid Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+    }
+}

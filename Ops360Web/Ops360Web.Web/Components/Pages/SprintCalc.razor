@@ -1,0 +1,92 @@
+@page "/sprint-calc"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Sprint Planning</h3>
+
+<EditForm Model="request" OnValidSubmit="CalculateSprints">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Velocity</label>
+        <InputNumber class="form-control" @bind-Value="request.Velocity" />
+    </div>
+    <div class="mb-3">
+        <label>Start Date</label>
+        <InputDate class="form-control" @bind-Value="request.StartDate" />
+    </div>
+    <div class="mb-3">
+        <label>Sprint Length (days)</label>
+        <InputNumber class="form-control" @bind-Value="request.SprintLengthDays" />
+    </div>
+    <button class="btn btn-primary" type="submit">Calculate Sprints</button>
+</EditForm>
+
+@if (result != null)
+{
+    <h4 class="mt-4">Sprints</h4>
+    @foreach (var sprint in result.Sprints)
+    {
+        <div class="card mb-2">
+            <div class="card-header">@sprint.Name (@sprint.StartDate.ToShortDateString() - @sprint.EndDate.ToShortDateString())</div>
+            <div class="card-body">
+                <ul>
+                    @foreach (var issue in sprint.Issues)
+                    {
+                        <li>@issue.Title (@issue.StoryPoints) - @issue.Status</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    @if (result.UnassignedIssues.Any())
+    {
+        <div class="alert alert-warning">Unassigned Issues: @string.Join(", ", result.UnassignedIssues.Select(i => i.Title))</div>
+    }
+}
+
+@code {
+    private SprintCalculationRequestDto request = new() { StartDate = DateTime.Today, SprintLengthDays = 14 };
+    private SprintCalculationResultDto? result;
+
+    private async Task CalculateSprints()
+    {
+        // Load issues from API for planning
+        var issues = await Http.GetFromJsonAsync<List<Issue>>("/api/Issue");
+        request.Issues = issues ?? new();
+        var response = await Http.PostAsJsonAsync("/api/SprintCalculation", request);
+        result = await response.Content.ReadFromJsonAsync<SprintCalculationResultDto>();
+    }
+
+    public class Issue
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string Status { get; set; } = "Open";
+        public string Priority { get; set; } = "Medium";
+        public int StoryPoints { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+    public class SprintCalculationRequestDto
+    {
+        public List<Issue> Issues { get; set; } = new();
+        public int Velocity { get; set; }
+        public DateTime StartDate { get; set; }
+        public int SprintLengthDays { get; set; } = 14;
+    }
+    public class SprintCalculationResultDto
+    {
+        public List<Sprint> Sprints { get; set; } = new();
+        public List<Issue> UnassignedIssues { get; set; } = new();
+    }
+    public class Sprint
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int Velocity { get; set; }
+        public List<Issue> Issues { get; set; } = new();
+    }
+}

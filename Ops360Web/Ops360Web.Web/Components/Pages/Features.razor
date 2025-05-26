@@ -1,0 +1,87 @@
+@page "/features"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Features</h3>
+
+<EditForm Model="newFeature" OnValidSubmit="CreateFeature">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="newFeature.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="newFeature.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Acceptance Criteria</label>
+        <InputTextArea class="form-control" @bind-Value="newFeature.AcceptanceCriteria" />
+    </div>
+    <button class="btn btn-primary" type="submit">Add Feature</button>
+</EditForm>
+
+@if (features != null)
+{
+    <h4 class="mt-4">Features</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Acceptance Criteria</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var feature in features)
+            {
+                <tr>
+                    <td>@feature.Title</td>
+                    <td>@feature.Description</td>
+                    <td>@feature.AcceptanceCriteria</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteFeature(feature.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Feature>? features;
+    private Feature newFeature = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFeatures();
+    }
+
+    private async Task LoadFeatures()
+    {
+        features = await Http.GetFromJsonAsync<List<Feature>>("/api/Feature");
+    }
+
+    private async Task CreateFeature()
+    {
+        await Http.PostAsJsonAsync("/api/Feature", newFeature);
+        newFeature = new();
+        await LoadFeatures();
+    }
+
+    private async Task DeleteFeature(Guid id)
+    {
+        await Http.DeleteAsync($"/api/Feature/{id}");
+        await LoadFeatures();
+    }
+
+    public class Feature
+    {
+        public Guid Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+    }
+}

@@ -1,0 +1,98 @@
+@page "/issues"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Issue Management</h3>
+
+<EditForm Model="newIssue" OnValidSubmit="CreateIssue">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label>Title</label>
+        <InputText class="form-control" @bind-Value="newIssue.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="newIssue.Description" />
+    </div>
+    <div class="mb-3">
+        <label>Priority</label>
+        <InputText class="form-control" @bind-Value="newIssue.Priority" />
+    </div>
+    <div class="mb-3">
+        <label>Story Points</label>
+        <InputNumber class="form-control" @bind-Value="newIssue.StoryPoints" />
+    </div>
+    <button class="btn btn-primary" type="submit">Add Issue</button>
+</EditForm>
+
+@if (issues != null)
+{
+    <h4 class="mt-4">Issues</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Story Points</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var issue in issues)
+            {
+                <tr>
+                    <td>@issue.Title</td>
+                    <td>@issue.Description</td>
+                    <td>@issue.Priority</td>
+                    <td>@issue.StoryPoints</td>
+                    <td>@issue.Status</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteIssue(issue.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Issue>? issues;
+    private Issue newIssue = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadIssues();
+    }
+
+    private async Task LoadIssues()
+    {
+        issues = await Http.GetFromJsonAsync<List<Issue>>("/api/Issue");
+    }
+
+    private async Task CreateIssue()
+    {
+        await Http.PostAsJsonAsync("/api/Issue", newIssue);
+        newIssue = new();
+        await LoadIssues();
+    }
+
+    private async Task DeleteIssue(Guid id)
+    {
+        await Http.DeleteAsync($"/api/Issue/{id}");
+        await LoadIssues();
+    }
+
+    public class Issue
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string Status { get; set; } = "Open";
+        public string Priority { get; set; } = "Medium";
+        public int StoryPoints { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+}

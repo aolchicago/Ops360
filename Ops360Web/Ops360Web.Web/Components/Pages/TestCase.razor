@@ -1,0 +1,77 @@
+@page "/testcase"
+
+@using System.Net.Http.Json
+
+<h3>Generate Test Cases</h3>
+
+<EditForm Model="testCasesGetDto" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label">Acceptance Criteria</label>
+        <InputTextArea class="form-control" @bind-Value="testCasesGetDto.AcceptanceCriteria" />
+    </div>
+    <button type="submit" class="btn btn-primary">Generate</button>
+</EditForm>
+
+@if (testCases != null)
+{
+    <div class="mt-4">
+        <h4>Generated Test Cases</h4>
+        <ol>
+            @foreach (var tc in testCases)
+            {
+                <li>
+                    <strong>@tc.Title</strong><br />
+                    @tc.Description
+                </li>
+            }
+        </ol>
+    </div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    private TestCasesGetDto testCasesGetDto = new();
+    private List<TestCaseModel>? testCases;
+    private string? errorMessage;
+
+    [Inject]
+    private HttpClient Http { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        errorMessage = null;
+        testCases = null;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("/api/TestCase", testCasesGetDto);
+            if (response.IsSuccessStatusCode)
+            {
+                testCases = await response.Content.ReadFromJsonAsync<List<TestCaseModel>>();
+            }
+            else
+            {
+                errorMessage = $"Error: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    public class TestCasesGetDto
+    {
+        public string? AcceptanceCriteria { get; set; }
+    }
+    public class TestCaseModel
+    {
+        public string? Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+    }
+}

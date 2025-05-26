@@ -1,0 +1,83 @@
+@page "/azdo-testcases"
+
+@using System.Net.Http.Json
+
+<h3>Create Test Cases for Work Item</h3>
+
+<EditForm Model="testCasesCreateDto" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label class="form-label">Organization</label>
+        <InputText class="form-control" @bind-Value="testCasesCreateDto.Organization" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Project</label>
+        <InputText class="form-control" @bind-Value="testCasesCreateDto.Project" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Area Path</label>
+        <InputText class="form-control" @bind-Value="testCasesCreateDto.AreaPath" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Test Cases (JSON array)</label>
+        <InputTextArea class="form-control" @bind-Value="testCasesJson" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create Test Cases</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    private TestCasesCreateDto testCasesCreateDto = new();
+    private string testCasesJson = "[]";
+    private string? successMessage;
+    private string? errorMessage;
+
+    [Inject]
+    private HttpClient Http { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        errorMessage = null;
+        successMessage = null;
+        try
+        {
+            testCasesCreateDto.TestCases = System.Text.Json.JsonSerializer.Deserialize<List<TestCaseModel>>(testCasesJson);
+            var response = await Http.PostAsJsonAsync("/api/AzDo/TestCases", testCasesCreateDto);
+            if (response.IsSuccessStatusCode)
+            {
+                successMessage = "Test cases created successfully.";
+            }
+            else
+            {
+                errorMessage = $"Error: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    public class TestCasesCreateDto
+    {
+        public string? Organization { get; set; }
+        public string? Project { get; set; }
+        public string? AreaPath { get; set; }
+        public List<TestCaseModel>? TestCases { get; set; }
+    }
+    public class TestCaseModel
+    {
+        public string? Id { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+    }
+}
