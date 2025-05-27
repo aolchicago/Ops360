@@ -24,9 +24,10 @@ namespace Mapache.PromptEvalDotNet
 
             this.Meter = new(MeterId ?? "PromptEvalDotNet");
 
-            _meterProvider = Sdk.CreateMeterProviderBuilder()
-                .AddMeter(MeterId)
-                .Build();
+            if (MeterId != null)
+                _meterProvider = Sdk.CreateMeterProviderBuilder()
+                    .AddMeter(MeterId)
+                    .Build();
 
             _kernelFunctions = _kernel.CreatePluginFromPromptDirectory("Prompts");
         }
