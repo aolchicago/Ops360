@@ -11,7 +11,7 @@ using System;
 
 namespace AzDoCopilotSK.Tests
 {
-    public partial class EpicControllerTests 
+    public partial class EpicControllerTests
     {
         private static Kernel CreateKernel() => new Kernel();
         private static FunctionResult CreateFunctionResult(string json)
@@ -27,7 +27,7 @@ namespace AzDoCopilotSK.Tests
             var kernel = CreateKernel();
             var mockFactory = new Mock<IPromptsFactory>();
             var mockLogger = new Mock<ILogger<EpicController>>();
-            var mockFunction = new Mock<KernelFunction>(MockBehavior.Strict, "test", "test");
+            var mockFunction = new Mock<KernelFunction>();
             mockFactory.Setup(f => f.GetEpicPrompt()).Returns(mockFunction.Object);
             mockFunction.Setup(f => f.InvokeAsync(It.IsAny<Kernel>(), It.IsAny<KernelArguments>(), default))
                 .ReturnsAsync(CreateFunctionResult("{\"id\":\"1\",\"title\":\"Test\",\"description\":\"desc\",\"acceptanceCriteria\":\"criteria\"}"));
